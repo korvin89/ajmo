@@ -1,0 +1,605 @@
+{
+  "name": "ajmo",
+  "displayName": "Ajmo",
+  "description": "A workbench for Claude Code agents in VS Code: see every session and who is waiting for you, start new ones, read their changes and review them with the agent on the lines.",
+  "version": "0.24.5",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#0D7A6B",
+    "theme": "dark"
+  },
+  "publisher": "korvin89",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/korvin89/ajmo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/korvin89/ajmo/issues"
+  },
+  "homepage": "https://github.com/korvin89/ajmo#readme",
+  "keywords": [
+    "claude",
+    "claude code",
+    "agents",
+    "ai",
+    "code review",
+    "pull request",
+    "worktree"
+  ],
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onFileSystem:ajmo-base"
+  ],
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --target=node20 --external:vscode --outfile=dist/extension.js",
+    "watch": "npm run build -- --sourcemap --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test \"test/*.test.ts\"",
+    "smoke": "npm run build && node fake/smoke.js",
+    "package": "npx --yes @vscode/vsce package",
+    "vscode:prepublish": "npm run typecheck && npm run build -- --minify"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ajmo",
+          "title": "Ajmo: Agents",
+          "icon": "media/ajmo.svg"
+        },
+        {
+          "id": "ajmoReview",
+          "title": "Ajmo: Review",
+          "icon": "$(code-review)"
+        }
+      ]
+    },
+    "icons": {
+      "ajmo-logo": {
+        "description": "Ajmo logo",
+        "default": {
+          "fontPath": "media/ajmo.woff",
+          "fontCharacter": "\\f101"
+        }
+      }
+    },
+    "views": {
+      "ajmo": [
+        {
+          "type": "webview",
+          "id": "ajmo.filter",
+          "name": "Search & Filter",
+          "initialSize": 1
+        },
+        {
+          "id": "ajmo.sessions",
+          "name": "Sessions",
+          "initialSize": 20
+        }
+      ],
+      "ajmoReview": [
+        {
+          "id": "ajmo.changes",
+          "name": "Changes",
+          "when": "ajmo.reviewFolder"
+        },
+        {
+          "id": "ajmo.draft",
+          "name": "Draft",
+          "when": "ajmo.reviewFolder"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ajmo.newSession",
+        "category": "Ajmo",
+        "title": "New Session",
+        "icon": "$(add)"
+      },
+      {
+        "command": "ajmo.find",
+        "category": "Ajmo",
+        "title": "Find Session"
+      },
+      {
+        "command": "ajmo.filter",
+        "category": "Ajmo",
+        "title": "Filter List"
+      },
+      {
+        "command": "ajmo.clearFilter",
+        "category": "Ajmo",
+        "title": "Clear Filter",
+        "icon": "$(filter-filled)"
+      },
+      {
+        "command": "ajmo.refresh",
+        "category": "Ajmo",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ajmo.markAllSeen",
+        "category": "Ajmo",
+        "title": "Mark All as Seen",
+        "icon": "$(check-all)"
+      },
+      {
+        "command": "ajmo.open",
+        "title": "Open Session in Terminal"
+      },
+      {
+        "command": "ajmo.copyId",
+        "title": "Copy Session ID"
+      },
+      {
+        "command": "ajmo.nextWaiting",
+        "category": "Ajmo",
+        "title": "Go to Next Waiting Session"
+      },
+      {
+        "command": "ajmo.openPr",
+        "title": "Open Pull Request",
+        "icon": "$(git-pull-request)"
+      },
+      {
+        "command": "ajmo.delete",
+        "title": "Delete Session",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "ajmo.markSeen",
+        "title": "Mark as Seen"
+      },
+      {
+        "command": "ajmo.markUnseen",
+        "title": "Mark as Unseen"
+      },
+      {
+        "command": "ajmo.openCode",
+        "title": "Open Code in New Window",
+        "icon": "$(folder-opened)"
+      },
+      {
+        "command": "ajmo.changes.refresh",
+        "category": "Ajmo",
+        "title": "Refresh Changes and PR Comments",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "ajmo.changes.open",
+        "title": "Open Changes"
+      },
+      {
+        "command": "ajmo.review.comment",
+        "title": "For Author"
+      },
+      {
+        "command": "ajmo.review.askAgent",
+        "title": "For Agent"
+      },
+      {
+        "command": "ajmo.review.replyReviewer",
+        "title": "For Reviewer"
+      },
+      {
+        "command": "ajmo.review.deleteComment",
+        "title": "Delete Comment",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "ajmo.review.editComment",
+        "title": "Edit Comment",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "ajmo.review.saveComment",
+        "title": "Save"
+      },
+      {
+        "command": "ajmo.review.cancelEdit",
+        "title": "Cancel"
+      },
+      {
+        "command": "ajmo.draft.open",
+        "title": "Go to Comment"
+      },
+      {
+        "command": "ajmo.changes.asTree",
+        "category": "Ajmo",
+        "title": "View Changes as Tree",
+        "icon": "$(list-tree)"
+      },
+      {
+        "command": "ajmo.changes.asList",
+        "category": "Ajmo",
+        "title": "View Changes as List",
+        "icon": "$(list-flat)"
+      },
+      {
+        "command": "ajmo.draft.clear",
+        "category": "Ajmo",
+        "title": "Clear Draft",
+        "icon": "$(clear-all)"
+      },
+      {
+        "command": "ajmo.draft.sync",
+        "category": "Ajmo",
+        "title": "Sync with the Agent",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "ajmo.draft.publish",
+        "category": "Ajmo",
+        "title": "Post the Draft to GitHub (as a Pending Review)",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "ajmo.review.resolve",
+        "title": "Resolve on GitHub",
+        "icon": "$(check)"
+      },
+      {
+        "command": "ajmo.review.unresolve",
+        "title": "Unresolve on GitHub",
+        "icon": "$(issue-reopened)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ajmo.newSession",
+          "when": "view == ajmo.sessions",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ajmo.clearFilter",
+          "when": "view == ajmo.sessions && ajmo.filterActive",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ajmo.refresh",
+          "when": "view == ajmo.sessions",
+          "group": "navigation@3"
+        },
+        {
+          "command": "ajmo.markAllSeen",
+          "when": "view == ajmo.sessions",
+          "group": "navigation@4"
+        },
+        {
+          "command": "ajmo.changes.asTree",
+          "when": "view == ajmo.changes && !ajmo.changesAsTree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ajmo.changes.asList",
+          "when": "view == ajmo.changes && ajmo.changesAsTree",
+          "group": "navigation@1"
+        },
+        {
+          "command": "ajmo.changes.refresh",
+          "when": "view == ajmo.changes",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ajmo.draft.clear",
+          "when": "view == ajmo.draft && ajmo.draftNotEmpty",
+          "group": "navigation@2"
+        },
+        {
+          "command": "ajmo.draft.sync",
+          "when": "view == ajmo.draft && ajmo.hasScratch",
+          "group": "navigation@0"
+        },
+        {
+          "command": "ajmo.draft.publish",
+          "when": "view == ajmo.draft && ajmo.hasScratch",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "submenu": "ajmo.sessionActions",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bsession\\b/",
+          "group": "inline"
+        },
+        {
+          "command": "ajmo.open",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "ajmo.openCode",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@2"
+        },
+        {
+          "command": "ajmo.openPr",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bpr\\b/",
+          "group": "1_actions@3"
+        },
+        {
+          "command": "ajmo.markSeen",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bunseen\\b/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "ajmo.markUnseen",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bseen\\b/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "ajmo.copyId",
+          "when": "view == ajmo.sessions && viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@5"
+        },
+        {
+          "command": "ajmo.delete",
+          "when": "view == ajmo.sessions && viewItem =~ /\\battach\\b/",
+          "group": "9_delete@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "ajmo.open",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.copyId",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.openPr",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.delete",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.markSeen",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.markUnseen",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.openCode",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.changes.open",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.changes.refresh",
+          "when": "ajmo.reviewFolder"
+        },
+        {
+          "command": "ajmo.review.comment",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.askAgent",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.replyReviewer",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.deleteComment",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.editComment",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.saveComment",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.cancelEdit",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.draft.open",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.changes.asTree",
+          "when": "ajmo.reviewFolder && !ajmo.changesAsTree"
+        },
+        {
+          "command": "ajmo.changes.asList",
+          "when": "ajmo.reviewFolder && ajmo.changesAsTree"
+        },
+        {
+          "command": "ajmo.draft.clear",
+          "when": "ajmo.reviewFolder && ajmo.draftNotEmpty"
+        },
+        {
+          "command": "ajmo.draft.sync",
+          "when": "ajmo.reviewFolder && ajmo.hasScratch"
+        },
+        {
+          "command": "ajmo.draft.publish",
+          "when": "ajmo.reviewFolder && ajmo.hasScratch"
+        },
+        {
+          "command": "ajmo.review.resolve",
+          "when": "false"
+        },
+        {
+          "command": "ajmo.review.unresolve",
+          "when": "false"
+        }
+      ],
+      "ajmo.sessionActions": [
+        {
+          "command": "ajmo.open",
+          "when": "viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@1"
+        },
+        {
+          "command": "ajmo.openCode",
+          "when": "viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@2"
+        },
+        {
+          "command": "ajmo.openPr",
+          "when": "viewItem =~ /\\bpr\\b/",
+          "group": "1_actions@3"
+        },
+        {
+          "command": "ajmo.markSeen",
+          "when": "viewItem =~ /\\bunseen\\b/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "ajmo.markUnseen",
+          "when": "viewItem =~ /\\bseen\\b/",
+          "group": "1_actions@4"
+        },
+        {
+          "command": "ajmo.copyId",
+          "when": "viewItem =~ /\\bsession\\b/",
+          "group": "1_actions@5"
+        },
+        {
+          "command": "ajmo.delete",
+          "when": "viewItem =~ /\\battach\\b/",
+          "group": "9_delete@1"
+        }
+      ],
+      "comments/commentThread/context": [
+        {
+          "command": "ajmo.review.askAgent",
+          "group": "inline@1",
+          "when": "commentController == ajmo.review"
+        },
+        {
+          "command": "ajmo.review.comment",
+          "group": "inline@2",
+          "when": "commentController == ajmo.review && ajmo.reviewRole == reviewer"
+        },
+        {
+          "command": "ajmo.review.replyReviewer",
+          "group": "inline@2",
+          "when": "commentController == ajmo.review && ajmo.reviewRole == author && commentThread =~ /^gh:/"
+        }
+      ],
+      "comments/commentThread/title": [
+        {
+          "command": "ajmo.review.resolve",
+          "group": "inline@1",
+          "when": "commentController == ajmo.review && commentThread =~ /^gh:open$/"
+        },
+        {
+          "command": "ajmo.review.unresolve",
+          "group": "inline@1",
+          "when": "commentController == ajmo.review && commentThread =~ /^gh:resolved$/"
+        }
+      ],
+      "comments/comment/title": [
+        {
+          "command": "ajmo.review.editComment",
+          "group": "inline@1",
+          "when": "commentController == ajmo.review && comment =~ /^mine:/"
+        },
+        {
+          "command": "ajmo.review.deleteComment",
+          "group": "inline@2",
+          "when": "commentController == ajmo.review && comment =~ /^mine:/"
+        }
+      ],
+      "comments/comment/context": [
+        {
+          "command": "ajmo.review.cancelEdit",
+          "group": "inline@2",
+          "when": "commentController == ajmo.review"
+        },
+        {
+          "command": "ajmo.review.saveComment",
+          "group": "inline@1",
+          "when": "commentController == ajmo.review"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Ajmo",
+      "properties": {
+        "ajmo.claudePath": {
+          "type": "string",
+          "default": "claude",
+          "description": "Command or full path of the Claude Code CLI."
+        },
+        "ajmo.launchDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Folder whose git repositories (one level below) are offered when starting a new session. Empty — the workspace folder, or its parent when the workspace folder is itself a repository."
+        },
+        "ajmo.pollSeconds": {
+          "type": "number",
+          "default": 3,
+          "minimum": 1,
+          "description": "How often to poll claude agents, in seconds."
+        },
+        "ajmo.openIn": {
+          "type": "string",
+          "enum": [
+            "editor",
+            "panel"
+          ],
+          "default": "editor",
+          "description": "Where to open a session terminal: as an editor tab or in the bottom panel."
+        },
+        "ajmo.notifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a notification when a session starts waiting for you or fails."
+        },
+        "ajmo.notifyOnDone": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also show a notification when a session finishes."
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "ajmo.nextWaiting",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "ajmo.sessionActions",
+        "label": "Session Actions",
+        "icon": "$(ellipsis)"
+      }
+    ],
+    "configurationDefaults": {
+      "comments.maxHeight": false
+    }
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "@types/vscode": "1.94.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

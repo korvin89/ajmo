@@ -1,0 +1,13 @@
+{
+  "name": "ajmo",
+  "owner": { "name": "Evgenii Alaev" },
+  "description": "Skills that work together with the Ajmo VS Code extension.",
+  "plugins": [
+    {
+      "name": "ajmo",
+      "source": "./plugin",
+      "description": "Review a pull request with the agent inside VS Code, and take your own task to a merged PR: findings and notes appear as threads on the lines in the Ajmo extension, you answer there, and only the finished comments go to your GitHub draft review. Needs the Ajmo VS Code extension.",
+      "keywords": ["ajmo", "code-review", "review", "task", "vscode", "github", "pr"]
+    }
+  ]
+}

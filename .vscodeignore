@@ -1,0 +1,16 @@
+node_modules/**
+src/**
+test/**
+fake/**
+.github/**
+.vscode/**
+tsconfig.json
+package-lock.json
+AGENTS.md
+CLAUDE.md
+docs/**
+.gitignore
+*.vsix
+plugin/**
+.claude-plugin/**
+media/icon.svg
