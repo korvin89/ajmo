@@ -1,0 +1,35 @@
+name: Release
+# A pushed tag v<version> is a release: the checks run once more, the .vsix is
+# built and published as a GitHub release with that version's section of
+# CHANGELOG.md as its notes. See docs/releasing.md.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: The tag, package.json, the plugin and the changelog agree
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          [ "$(jq -r .version package.json)" = "$version" ] || { echo "package.json is not $version"; exit 1; }
+          [ "$(jq -r .version plugin/.claude-plugin/plugin.json)" = "$version" ] || { echo "plugin.json is not $version"; exit 1; }
+          awk -v v="$version" 'index($0, "## [" v "]") == 1 { on = 1; next } on && /^## \[/ { exit } on' CHANGELOG.md > notes.md
+          grep -q '[^[:space:]]' notes.md || { echo "CHANGELOG.md has no section for $version"; exit 1; }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run smoke
+      - run: npm run package
+      - run: gh release create "$GITHUB_REF_NAME" ajmo-*.vsix --title "$GITHUB_REF_NAME" --notes-file notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}

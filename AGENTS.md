@@ -56,12 +56,14 @@ Two parts that share one small module; keep them apart.
 - Tests and the smoke run do not prove VS Code behaviour. Say what was
   actually verified; ask the user to check the rest in a real window.
 - For a non-obvious choice, ask the user first and offer a default.
-- Every change: bump the version in `package.json` and in
-  `plugin/.claude-plugin/plugin.json`, rebuild the `.vsix`, commit to `main`,
-  tag `v<version>`, and push `main` and that tag to `origin`
-  (`github.com/korvin89/ajmo`, public). Push one tag by name, never
-  `--tags`. A GitHub release with the `.vsix` is made when the user asks:
-  `gh release create v<version> ajmo-<version>.vsix`.
+- `main` is the latest release and is never committed to directly: the
+  repository is public (`github.com/korvin89/ajmo`) and the plugin is
+  installed from `main`. Every change goes to the branch `next`, with a
+  line in `[Unreleased]` of `CHANGELOG.md` when a user can notice it, and is
+  pushed; the version there follows what the changelog holds. A release —
+  the merge into `main`, the tag, the GitHub release — is made only when the
+  user asks. All of it is in `docs/releasing.md`; read it before the first
+  commit of a session.
 - The public history starts at "Initial commit". What came before it was
   local only and has been deleted on purpose; there is nothing to restore.
 - The README is for somebody who has never seen the project: what it is,
@@ -89,3 +91,5 @@ Read the one that matches the task before changing anything:
   user's skills exchange review threads.
 - `docs/roadmap.md` — what is built but not yet checked by the user, and
   what is left to build.
+- `docs/releasing.md` — the branch `next`, the version, the changelog, and
+  how a release is made.
