@@ -62,9 +62,8 @@ Two parts that share one small module; keep them apart.
   (`github.com/korvin89/ajmo`, public). Push one tag by name, never
   `--tags`. A GitHub release with the `.vsix` is made when the user asks:
   `gh release create v<version> ajmo-<version>.vsix`.
-- The public history starts at "Initial commit". What came before it holds
-  internal names and must never be pushed; it is kept outside this
-  repository, in `../ajmo-archive.git` on the user's machine.
+- The public history starts at "Initial commit". What came before it was
+  local only and has been deleted on purpose; there is nothing to restore.
 - The README is for somebody who has never seen the project: what it is,
   how to install it, how to use it. It does not mention `korvin89`; the
   panel's support for that plugin's files is described in `docs/` only.
