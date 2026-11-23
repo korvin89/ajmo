@@ -25,10 +25,10 @@ merged one.
 You need the `claude` CLI with agent view (`claude agents`), and for the
 skills `git`, the GitHub CLI `gh` (logged in) and `jq`.
 
-The extension: download `ajmo-0.24.5.vsix` from the
+The extension: download the latest `.vsix` from the
 [releases](https://github.com/korvin89/ajmo/releases) and install it:
 
-    code --install-extension ajmo-0.24.5.vsix
+    code --install-extension ajmo-<version>.vsix
 
 The plugin with the skills:
 

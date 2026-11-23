@@ -22,16 +22,15 @@ the "For Reviewer" button (its condition depends on the thread's context
 value), and two background processes in one session (the Sync listener and
 the watcher).
 
-## Next: publication
+## Next: after publication
+
+The repository is public since 2026-11-23: `github.com/korvin89/ajmo`, CI
+green, the `.vsix` in the releases.
 
 - Fix what the user's check finds; revise the skills' texts after it.
-- A public repository as a single initial commit: the local history holds
-  internal names and must not be pushed.
-- CI: typecheck, tests, the `.vsix` as an artifact.
-- The README and `package.json` already point at `github.com/korvin89/ajmo`;
-  check the install lines once the repository exists. A screenshot in the
-  README. A release with the `.vsix`: the README sends the reader there.
-- Decide: the Marketplace, or only a `.vsix` in the releases.
+- A screenshot in the README.
+- Decide: publish to the VS Code Marketplace, or stay with the `.vsix` in
+  the releases.
 
 ## Later
 

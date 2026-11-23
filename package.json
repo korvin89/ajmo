@@ -2,7 +2,7 @@
   "name": "ajmo",
   "displayName": "Ajmo",
   "description": "A workbench for Claude Code agents in VS Code: see every session and who is waiting for you, start new ones, read their changes and review them with the agent on the lines.",
-  "version": "0.24.5",
+  "version": "0.24.6",
   "icon": "media/icon.png",
   "galleryBanner": {
     "color": "#0D7A6B",

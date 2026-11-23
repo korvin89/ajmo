@@ -56,12 +56,15 @@ Two parts that share one small module; keep them apart.
 - Tests and the smoke run do not prove VS Code behaviour. Say what was
   actually verified; ask the user to check the rest in a real window.
 - For a non-obvious choice, ask the user first and offer a default.
-- Every change: bump the version in `package.json`, in
-  `plugin/.claude-plugin/plugin.json` and in the README install line,
-  rebuild the `.vsix`, commit to `main` and tag `v<version>`. The
-  repository is local only; do not push or create a GitHub repository unless
-  asked. When it is published, it goes as a single initial commit: the local
-  history holds internal names and must not be pushed.
+- Every change: bump the version in `package.json` and in
+  `plugin/.claude-plugin/plugin.json`, rebuild the `.vsix`, commit to `main`,
+  tag `v<version>`, and push `main` and that tag to `origin`
+  (`github.com/korvin89/ajmo`, public). Push one tag by name, never
+  `--tags`. A GitHub release with the `.vsix` is made when the user asks:
+  `gh release create v<version> ajmo-<version>.vsix`.
+- The public history starts at "Initial commit". What came before it holds
+  internal names and must never be pushed; it is kept outside this
+  repository, in `../ajmo-archive.git` on the user's machine.
 - The README is for somebody who has never seen the project: what it is,
   how to install it, how to use it. It does not mention `korvin89`; the
   panel's support for that plugin's files is described in `docs/` only.
