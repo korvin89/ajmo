@@ -1,6 +1,6 @@
 {
   "name": "ajmo",
-  "version": "0.24.7",
+  "version": "0.25.0",
   "description": "Skills for the Ajmo VS Code extension: review a pull request with the agent on the lines of the code, and take your own task to a merged PR, telling the agent what to change on the lines.",
   "author": {
     "name": "Evgenii Alaev"
