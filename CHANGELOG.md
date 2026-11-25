@@ -6,6 +6,11 @@ What changed for somebody who uses Ajmo, newest first. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Skills: they also work in Ajmo IDE, a not-yet-public fork of Code - OSS
+  built around agent sessions.
+
 ## [0.24.6] — 2026-11-23
 
 The first public release.
