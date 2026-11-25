@@ -8,8 +8,8 @@ What changed for somebody who uses Ajmo, newest first. The format follows
 
 ### Added
 
-- Skills: they also work in Ajmo IDE, a fork of Code - OSS built around
-  agent sessions.
+- Skills: they also work in Ajmo IDE, a not-yet-public fork of Code - OSS
+  built around agent sessions.
 
 ## [0.24.6] — 2026-11-23
 

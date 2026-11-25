@@ -7,8 +7,8 @@ shows every session and tells you when one is waiting for you, opens the code
 a session works on, and lets you talk to the agent on the lines of that code
 instead of in GitHub's web UI. A companion Claude Code plugin brings two
 skills built for this: reviewing a pull request and taking your own task to a
-merged one. The skills also work in Ajmo IDE, a fork of Code - OSS built
-around agent sessions, which is not public yet.
+merged one. The skills also work in Ajmo IDE, a not-yet-public fork of
+Code - OSS built around agent sessions.
 
 - **Sessions.** A side panel with every Claude Code session, grouped by
   repository, with its status. A counter and a shortcut take you to the next
